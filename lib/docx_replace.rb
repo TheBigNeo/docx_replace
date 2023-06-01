@@ -4,6 +4,10 @@ require "docx_replace/version"
 require 'zip'
 require 'tempfile'
 
+# Module to replace values in a DocX file.
+#
+# Original from https://github.com/adamalbrecht/docx_replace
+# Modified by Alex Will
 module DocxReplace
   class Doc
     attr_reader :document_content
@@ -14,6 +18,7 @@ module DocxReplace
       read_docx_file
     end
 
+    # Replaces the pattern with the replacement in the DocX file
     def replace(pattern, replacement, multiple_occurrences=false)
       replace = replacement.to_s.encode(xml: :text)
       if multiple_occurrences
@@ -33,7 +38,7 @@ module DocxReplace
 
     alias_method :uniq_matches, :unique_matches
 
-
+    # Save the new DocX to the new_path
     def commit(new_path=nil)
       write_back_to_file(new_path)
     end
@@ -69,6 +74,8 @@ module DocxReplace
       else
         path = new_path
       end
+
+      temp_file.close
       FileUtils.mv(temp_file.path, path)
       @zip_file = Zip::File.new(path, true)
     end
